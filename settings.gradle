@@ -5,4 +5,4 @@ pluginManagement {
         maven { url "http://nexus.lassiterdynamics.com:8081/repository/gradle-plugins/" }
     }
 }
-rootProject.name = 'ODOS-MS-Registry'
+rootProject.name = 'odos-td-ms-registry'
