@@ -2,6 +2,8 @@
 def Common = new odos.jenkins.Common()
 
 def GIT_URL=scm.getUserRemoteConfigs()[0].getUrl()
+def CONTAINER_NAME='td-ms-reg'
+def OPENSHIFT_ENV='odos-ii-test'
 
 pipeline {
     agent any
@@ -27,7 +29,7 @@ pipeline {
             steps {
               script{
                 Common.slack 'Packaging into a container...'
-                Common.buildDockerContainer('crrs_ms_reg')
+                Common.buildDockerContainer("${CONTAINER_NAME}")
               }
             }
         }
@@ -35,7 +37,7 @@ pipeline {
             steps {
               script{
                 Common.slack 'Twistlock Scan...'
-                Common.twistlock("${DOCKER_REGISTRY}", 'crrs_ms_reg','latest')
+                Common.twistlock("${DOCKER_REGISTRY}", "${CONTAINER_NAME}",'latest')
               }
             }
         }
@@ -43,7 +45,7 @@ pipeline {
             steps {
               script{
                 Common.slack 'Push to Docker Registry..'
-                Common.pushContainer('crrs_ms_reg')
+                Common.pushContainer("${CONTAINER_NAME}")
               }
             }
         }
@@ -51,7 +53,7 @@ pipeline {
             steps {
               script{
                 Common.slack 'Deploying to Test Environment...'
-                Common.deployToOpenShift('odos-ii-test','crrs_ms_reg','latest')
+                Common.deployToOpenShift("${OPENSHIFT_ENV}","${CONTAINER_NAME}",'latest')
               }
             }
         }
